@@ -182,27 +182,37 @@
             .sale-col,.price-col,.buy-col { display:none; }
             .header,.container,.search-area { padding-left:14px; padding-right:14px; }
         }
-        /* เพิ่มโค้ดนี้ลงไปในส่วน <style> ล่างสุด */
+        /* ปรับแต่งสำหรับหน้าจอมือถือ */
 @media (max-width: 600px) {
-    .game-list {
-        grid-template-columns: 1fr !important; /* บังคับให้แสดงแถวละ 1 ตัว */
-        padding: 10px;
-    }
-
+    /* ให้ Card เรียงเป็นแนวตั้งเพื่อให้มีพื้นที่ด้านข้างมากขึ้น */
     .game-card {
-        flex-direction: column; /* ถ้าใช้ flex ให้เรียงเป็นแนวตั้ง */
-        width: 100% !important;
-        margin-bottom: 15px;
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 10px !important;
     }
 
-    .game-image {
-        width: 100% !important; /* ให้รูปกว้างเต็มจอ */
-        height: auto !important;
+    /* ปรับส่วนข้อมูลเกมให้กว้างเต็มจอ */
+    .game-info {
+        width: 100% !important;
+        margin-left: 0 !important;
+        margin-top: 10px;
     }
-    
-    /* ปรับขนาดฟอนต์หัวข้อให้เล็กลงนิดนึงในมือถือ */
-    .game-title {
-        font-size: 1.1rem !important;
+
+    /* จุดสำคัญ: ปรับส่วนราคาไม่ให้หล่นหรือทับกัน */
+    .game-price-section {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important; /* แยกชื่อร้านกับราคาไว้คนละฝั่ง */
+        align-items: center !important;
+        margin-top: 10px;
+        border-top: 1px solid var(--border);
+        padding-top: 10px;
+    }
+
+    /* ปรับขนาดตัวเลขราคาให้เล็กลงนิดนึงเพื่อให้พอดีจอ */
+    .price-current {
+        font-size: 1.2rem !important;
     }
 }
     </style>
