@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="th" data-theme="dark" data-font="100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Somagamasu Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== THEMES ===== */
+        :root {
+            --bg:#0d1117; --bg2:#161b22; --card:#1c2128; --card-hover:#21262d;
+            --border:#30363d; --text:#e6edf3; --text-sub:#8b949e;
+            --accent:#58a6ff; --accent2:#3fb950; --accent-glow:rgba(88,166,255,.15);
+            --sale:#f78166; --rare:#d2a8ff; --legendary:#ffa657; --forever:#79c0ff;
+            --badge-sale-bg:rgba(247,129,102,.15); --badge-rare-bg:rgba(210,168,255,.15);
+            --badge-legendary-bg:rgba(255,166,87,.15); --badge-forever-bg:rgba(121,192,255,.12);
+            --input-bg:#0d1117; --fav:#f1c40f;
+        }
+        [data-theme="dusk"] {
+            --bg:#1a1025; --bg2:#221535; --card:#2a1d42; --card-hover:#311f4e;
+            --border:#3d2b5e; --text:#ede0ff; --text-sub:#9b7fc4;
+            --accent:#c084fc; --accent2:#86efac; --accent-glow:rgba(192,132,252,.12);
+            --input-bg:#1a1025;
+        }
+        [data-theme="fog"] {
+            --bg:#f0f2f5; --bg2:#fff; --card:#fff; --card-hover:#f6f8fa;
+            --border:#d0d7de; --text:#24292f; --text-sub:#57606a;
+            --accent:#0969da; --accent2:#1a7f37; --accent-glow:rgba(9,105,218,.08);
+            --input-bg:#fff;
+        }
+
+        /* ===== FONT SIZE ===== */
+        [data-font="100"] { font-size:16px; }
+        [data-font="125"] { font-size:20px; }
+        [data-font="150"] { font-size:24px; }
+
+        *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+        body { background:var(--bg); color:var(--text); font-family:'Prompt',sans-serif; transition:background .3s,color .3s; min-height:100vh; }
+
+        /* ===== HEADER ===== */
+        .header { background:var(--bg2); border-bottom:1px solid var(--border); padding:12px 28px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(10px); gap:10px; flex-wrap:wrap; }
+        .logo { font-family:'Space Mono',monospace; font-size:1.05em; font-weight:700; color:var(--accent); letter-spacing:2px; white-space:nowrap; cursor:default; }
+        .logo .sub   { color:var(--text-sub); font-weight:400; font-size:.58em; display:block; letter-spacing:3px; margin-top:1px; }
+        .logo .credit{ color:var(--text-sub); font-size:.52em; font-family:'Prompt',sans-serif; font-weight:300; letter-spacing:1px; margin-top:1px; }
+        .header-right { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+
+        /* CONTROLS */
+        .ctrl-wrap  { display:flex; align-items:center; gap:5px; }
+        .ctrl-label { font-size:.6em; color:var(--text-sub); font-family:'Space Mono',monospace; letter-spacing:1px; white-space:nowrap; }
+        .ctrl-select{ background:var(--card); color:var(--text); border:1px solid var(--border); border-radius:7px; padding:4px 7px; font-family:'Prompt',sans-serif; font-size:.76em; cursor:pointer; outline:none; transition:border-color .2s; }
+        .ctrl-select:focus { border-color:var(--accent); }
+        .font-btn   { padding:3px 8px; background:var(--card); border:1px solid var(--border); border-radius:6px; color:var(--text-sub); font-family:'Space Mono',monospace; font-size:.65em; cursor:pointer; transition:all .2s; }
+        .font-btn:hover { border-color:var(--accent); color:var(--accent); }
+        .font-btn.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+        .theme-btn  { width:21px; height:21px; border-radius:50%; border:2px solid var(--border); cursor:pointer; transition:transform .2s,border-color .2s; flex-shrink:0; }
+        .theme-btn:hover { transform:scale(1.15); border-color:var(--accent); }
+        .theme-btn.active { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+        .fav-tab-btn { padding:4px 10px; background:var(--card); border:1px solid var(--border); border-radius:7px; color:var(--fav); font-family:'Space Mono',monospace; font-size:.65em; cursor:pointer; transition:all .2s; white-space:nowrap; }
+        .fav-tab-btn:hover  { border-color:var(--fav); background:rgba(241,196,15,.08); }
+        .fav-tab-btn.active { background:rgba(241,196,15,.15); border-color:var(--fav); }
+
+        /* ===== SEARCH ===== */
+        .search-area  { padding:28px 36px 18px; max-width:960px; margin:0 auto; }
+        .search-label { font-size:.64em; font-family:'Space Mono',monospace; color:var(--text-sub); letter-spacing:3px; text-transform:uppercase; margin-bottom:10px; }
+        .search-row   { display:flex; gap:9px; flex-wrap:wrap; }
+        .search-input { flex:1; min-width:180px; padding:11px 16px; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'Prompt',sans-serif; font-size:.93em; outline:none; transition:border-color .2s,box-shadow .2s; }
+        .search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
+        .search-input::placeholder { color:var(--text-sub); }
+        .search-btn   { padding:11px 24px; background:var(--accent); color:var(--bg); border:none; border-radius:10px; font-family:'Space Mono',monospace; font-weight:700; font-size:.78em; cursor:pointer; letter-spacing:1px; transition:opacity .2s,transform .15s; white-space:nowrap; }
+        .search-btn:hover { opacity:.85; transform:translateY(-1px); }
+
+        /* STORE FILTER */
+        .store-filter-row { display:flex; align-items:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
+        .store-filter-label { font-size:.63em; color:var(--text-sub); font-family:'Space Mono',monospace; white-space:nowrap; }
+        .store-chips  { display:flex; gap:5px; flex-wrap:wrap; }
+        .chip { padding:3px 9px; border:1px solid var(--border); border-radius:20px; font-size:.63em; font-family:'Space Mono',monospace; color:var(--text-sub); cursor:pointer; transition:all .2s; user-select:none; }
+        .chip:hover { border-color:var(--accent); color:var(--accent); }
+        .chip.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+        .chip.all { border-color:var(--accent2); color:var(--accent2); }
+        .chip.all.active { background:var(--accent2); color:var(--bg); border-color:var(--accent2); }
+        .search-hint  { font-size:.62em; color:var(--text-sub); margin-top:7px; font-family:'Space Mono',monospace; }
+
+        /* CURRENCY NOTE */
+        .currency-note { font-size:.6em; color:var(--text-sub); font-family:'Space Mono',monospace; margin-top:4px; font-style:italic; }
+
+        /* ===== CONTAINER ===== */
+        .container { max-width:1440px; margin:0 auto; padding:0 36px 60px; }
+
+        /* STATS BAR */
+        .stats-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border); }
+        .result-stats { font-size:.74em; color:var(--text-sub); font-family:'Space Mono',monospace; }
+        .result-stats b { color:var(--accent); }
+
+        /* PAGINATION */
+        .pagination     { display:flex; gap:5px; justify-content:center; margin-top:22px; flex-wrap:wrap; align-items:center; }
+        .pagination-top { margin-top:0; }
+        .page-btn { padding:6px 11px; background:var(--card); border:1px solid var(--border); border-radius:7px; color:var(--text); cursor:pointer; font-family:'Space Mono',monospace; font-size:.7em; transition:all .2s; white-space:nowrap; }
+        .page-btn:hover  { border-color:var(--accent); color:var(--accent); }
+        .page-btn.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+        .page-ellipsis  { color:var(--text-sub); font-size:.73em; padding:0 2px; display:flex; align-items:center; }
+
+        /* ===== GAME CARD ===== */
+        .game-list { display:flex; flex-direction:column; gap:8px; }
+        .game-card { background:var(--card); border:1px solid var(--border); border-radius:12px; display:grid; grid-template-columns:168px 1fr auto auto 210px; align-items:center; overflow:hidden; transition:background .2s,border-color .2s,transform .15s; position:relative; }
+        .game-card:hover   { background:var(--card-hover); border-color:var(--accent); transform:translateY(-1px); }
+        .game-card.is-fav  { border-color:var(--fav) !important; }
+
+        .game-img-wrap { height:94px; overflow:hidden; position:relative; }
+        .game-img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
+        .game-card:hover .game-img { transform:scale(1.06); }
+
+        .fav-btn { position:absolute; top:5px; left:5px; background:rgba(0,0,0,.55); border:none; border-radius:50%; width:26px; height:26px; font-size:.95em; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .2s,background .2s; z-index:2; backdrop-filter:blur(4px); }
+        .fav-btn:hover  { transform:scale(1.2); background:rgba(0,0,0,.8); }
+        .fav-btn.active { color:var(--fav); }
+
+        .game-info    { padding:11px 15px; }
+        .game-title   { font-weight:600; font-size:.93em; margin-bottom:5px; line-height:1.3; }
+        .game-meta    { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
+        .meta-tag     { font-size:.6em; padding:2px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-sub); font-family:'Space Mono',monospace; }
+        .meta-tag.dev { border-color:var(--accent); color:var(--accent); }
+        .meta-tag.pub { color:var(--text-sub); font-style:italic; }
+        .meta-tag.release { color:var(--accent2); border-color:var(--accent2); }
+        .meta-tag.mc  { background:#e3b341; color:#000; border-color:transparent; font-weight:700; }
+
+        /* SALE BADGE */
+        .sale-col     { padding:11px; text-align:center; min-width:108px; }
+        .badge        { display:inline-block; padding:3px 8px; border-radius:5px; font-family:'Space Mono',monospace; font-size:.57em; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+        .badge-sale      { background:var(--badge-sale-bg);      color:var(--sale);      border:1px solid var(--sale); }
+        .badge-rare      { background:var(--badge-rare-bg);      color:var(--rare);      border:1px solid var(--rare); }
+        .badge-legendary { background:var(--badge-legendary-bg); color:var(--legendary); border:1px solid var(--legendary); animation:glimmer 2.5s ease-in-out infinite; }
+        .badge-forever   { background:var(--badge-forever-bg);   color:var(--forever);   border:1px solid var(--forever);   animation:pulse-blue 3s ease-in-out infinite; }
+        @keyframes glimmer   { 0%,100%{opacity:1} 50%{opacity:.6; box-shadow:0 0 8px var(--legendary)} }
+        @keyframes pulse-blue{ 0%,100%{opacity:1} 50%{opacity:.65;box-shadow:0 0 10px var(--forever)} }
+        .discount-pct { font-size:1.25em; font-weight:700; color:var(--sale); font-family:'Space Mono',monospace; }
+
+        /* PRICE */
+        .price-col  { padding:11px; text-align:right; min-width:108px; }
+        .price-now  { font-size:1.05em; font-weight:700; color:var(--accent2); font-family:'Space Mono',monospace; }
+        .price-orig { font-size:.7em; color:var(--text-sub); text-decoration:line-through; font-family:'Space Mono',monospace; }
+
+        /* BUY COLUMN */
+        .buy-col           { padding:11px; text-align:center; min-width:210px; }
+        .store-select-wrap { display:flex; flex-direction:column; gap:5px; align-items:stretch; }
+        .store-dropdown    { background:var(--input-bg); color:var(--text); border:1px solid var(--border); border-radius:8px; padding:5px 8px; font-family:'Prompt',sans-serif; font-size:.73em; cursor:pointer; outline:none; transition:border-color .2s; width:100%; }
+        .store-dropdown:focus  { border-color:var(--accent); }
+        .store-dropdown option { background:var(--card); }
+        .buy-btn   { display:block; width:100%; padding:7px 0; background:var(--accent); color:var(--bg); border:none; border-radius:8px; font-family:'Space Mono',monospace; font-size:.68em; font-weight:700; letter-spacing:1px; transition:opacity .2s; cursor:pointer; }
+        .buy-btn:hover { opacity:.8; }
+        .store-count { font-size:.57em; color:var(--text-sub); font-family:'Space Mono',monospace; margin-top:2px; }
+
+        /* ===== FAVOURITES PANEL ===== */
+        .fav-panel { display:none; background:var(--card); border:1px solid var(--fav); border-radius:12px; padding:18px; margin-bottom:18px; }
+        .fav-panel.open { display:block; }
+        .fav-panel-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .fav-panel-title  { font-family:'Space Mono',monospace; font-size:.76em; color:var(--fav); letter-spacing:2px; }
+        .fav-actions      { display:flex; gap:7px; }
+        .fav-action-btn   { padding:4px 9px; background:transparent; border:1px solid var(--border); border-radius:6px; color:var(--text-sub); font-family:'Space Mono',monospace; font-size:.6em; cursor:pointer; transition:all .2s; }
+        .fav-action-btn:hover { border-color:var(--accent); color:var(--accent); }
+        .fav-action-btn.danger:hover { border-color:var(--sale); color:var(--sale); }
+        .fav-list     { display:flex; flex-direction:column; gap:7px; }
+        .fav-item     { display:flex; align-items:center; gap:10px; padding:9px 12px; background:var(--bg2); border-radius:8px; border:1px solid var(--border); }
+        .fav-item img { width:58px; height:32px; object-fit:cover; border-radius:4px; flex-shrink:0; }
+        .fav-item-info { flex:1; min-width:0; }
+        .fav-item-name { font-size:.78em; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .fav-item-meta { font-size:.6em; color:var(--text-sub); font-family:'Space Mono',monospace; }
+        .fav-remove-btn { background:transparent; border:none; color:var(--text-sub); cursor:pointer; font-size:.95em; padding:4px; border-radius:4px; transition:color .2s; flex-shrink:0; }
+        .fav-remove-btn:hover { color:var(--sale); }
+        .fav-search-btn { padding:4px 9px; background:var(--accent); color:var(--bg); border:none; border-radius:6px; font-family:'Space Mono',monospace; font-size:.6em; cursor:pointer; white-space:nowrap; flex-shrink:0; }
+        .fav-empty { text-align:center; padding:28px; color:var(--text-sub); font-size:.76em; }
+
+        /* LOADING / EMPTY */
+        .loading { text-align:center; padding:60px 0; color:var(--text-sub); font-family:'Space Mono',monospace; font-size:.78em; letter-spacing:2px; }
+        .spinner  { width:30px; height:30px; border:3px solid var(--border); border-top-color:var(--accent); border-radius:50%; animation:spin .8s linear infinite; margin:0 auto 12px; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        .empty-state      { text-align:center; padding:70px 0; color:var(--text-sub); }
+        .empty-state .icon{ font-size:2.4em; margin-bottom:12px; }
+        .empty-state p    { font-size:.83em; line-height:1.6; }
+
+        @media(max-width:960px){
+            .game-card { grid-template-columns:108px 1fr; }
+            .sale-col,.price-col,.buy-col { display:none; }
+            .header,.container,.search-area { padding-left:14px; padding-right:14px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <div class="logo">
+        SOMAGAMASU
+        <span class="sub">GAME DEAL ENGINE · BY AI &amp; HUMAN</span>
+        <span class="credit">Nissit T · TH</span>
+    </div>
+    <div class="header-right">
+
+        <!-- FONT SIZE -->
+        <div class="ctrl-wrap">
+            <span class="ctrl-label">A</span>
+            <button class="font-btn active" onclick="setFont('100',this)">100%</button>
+            <button class="font-btn" onclick="setFont('125',this)">125%</button>
+            <button class="font-btn" onclick="setFont('150',this)">150%</button>
+        </div>
+
+        <!-- LANGUAGE -->
+        <div class="ctrl-wrap">
+            <span class="ctrl-label">LANG</span>
+            <select id="lang-select" class="ctrl-select" onchange="onLangChange()">
+                <option value="english"  data-ph="Search game... e.g. Resident Evil 2" data-cur="USD" data-sym="$">🇬🇧 English</option>
+                <option value="thai"     data-ph="ค้นหาเกม... เช่น Resident Evil 2"   data-cur="THB" data-sym="฿">🇹🇭 ไทย</option>
+                <option value="french"   data-ph="Rechercher un jeu... ex: RE2"        data-cur="EUR" data-sym="€">🇫🇷 Français</option>
+                <option value="spanish"  data-ph="Buscar juego... ej: RE2"             data-cur="EUR" data-sym="€">🇪🇸 Español</option>
+                <option value="japanese" data-ph="ゲームを検索... 例: バイオハザード"     data-cur="JPY" data-sym="¥">🇯🇵 日本語</option>
+                <option value="schinese" data-ph="搜索游戏... 例如: 生化危机"            data-cur="CNY" data-sym="¥">🇨🇳 中文</option>
+            </select>
+        </div>
+
+        <!-- CURRENCY -->
+        <div class="ctrl-wrap">
+            <span class="ctrl-label">💱</span>
+            <select id="currency-select" class="ctrl-select" onchange="onCurrencyChange()">
+                <option value="USD" data-sym="$"  data-rate="1">🇺🇸 USD ($)</option>
+                <option value="THB" data-sym="฿"  data-rate="35.5">🇹🇭 THB (฿)</option>
+                <option value="EUR" data-sym="€"  data-rate="0.92">🇪🇺 EUR (€)</option>
+                <option value="JPY" data-sym="¥"  data-rate="154">🇯🇵 JPY (¥)</option>
+                <option value="CNY" data-sym="¥"  data-rate="7.24">🇨🇳 CNY (¥)</option>
+                <option value="GBP" data-sym="£"  data-rate="0.79">🇬🇧 GBP (£)</option>
+            </select>
+        </div>
+
+        <!-- THEME -->
+        <div class="ctrl-wrap">
+            <span class="ctrl-label">THEME</span>
+            <div class="theme-btn active" style="background:#1c2128" onclick="setTheme('dark',this)"></div>
+            <div class="theme-btn" style="background:#2a1d42" onclick="setTheme('dusk',this)"></div>
+            <div class="theme-btn" style="background:#f0f2f5;border-color:#d0d7de" onclick="setTheme('fog',this)"></div>
+        </div>
+
+        <!-- FAVOURITES -->
+        <button class="fav-tab-btn" id="fav-tab-btn" onclick="toggleFavPanel()">⭐ FAV (<span id="fav-count">0</span>)</button>
+    </div>
+</header>
+
+<!-- SEARCH -->
+<div class="search-area">
+    <div class="search-label" id="search-label">// SEARCH GAME DEALS</div>
+    <div class="search-row">
+        <input type="text" id="q" class="search-input"
+               placeholder="Search game... e.g. Resident Evil 2, Elden Ring"
+               onkeydown="if(event.key==='Enter') doSearch()">
+        <button class="search-btn" id="search-btn-text" onclick="doSearch()">SEARCH</button>
+    </div>
+
+    <!-- STORE FILTER -->
+    <div class="store-filter-row">
+        <span class="store-filter-label">STORES:</span>
+        <div class="store-chips" id="store-chips">
+            <div class="chip all active" data-store="all"      onclick="toggleChip(this)">🌐 All</div>
+            <div class="chip" data-store="steam"     onclick="toggleChip(this)">🎮 Steam</div>
+            <div class="chip" data-store="gog"       onclick="toggleChip(this)">🌌 GOG</div>
+            <div class="chip" data-store="epic"      onclick="toggleChip(this)">⚡ Epic</div>
+            <div class="chip" data-store="humble"    onclick="toggleChip(this)">🎁 Humble</div>
+            <div class="chip" data-store="fanatical" onclick="toggleChip(this)">🔥 Fanatical</div>
+            <div class="chip" data-store="gmg"       onclick="toggleChip(this)">🟢 GMG</div>
+            <div class="chip" data-store="cdkeys"    onclick="toggleChip(this)">🔑 CDKeys</div>
+            <div class="chip" data-store="kinguin"   onclick="toggleChip(this)">👑 Kinguin</div>
+        </div>
+    </div>
+    <div class="search-hint" id="search-hint">💡 Try partial names or series — e.g. "Resident Evil", "RE2"</div>
+    <div class="currency-note" id="currency-note">💱 Steam prices shown in local currency · Other store prices in USD converted to selected currency (approximate)</div>
+</div>
+
+<!-- FAVOURITES PANEL -->
+<div class="container">
+    <div class="fav-panel" id="fav-panel">
+        <div class="fav-panel-header">
+            <div class="fav-panel-title">⭐ MY FAVOURITES</div>
+            <div class="fav-actions">
+                <button class="fav-action-btn" onclick="exportFavs()">📥 Export JSON</button>
+                <button class="fav-action-btn" onclick="importFavs()">📤 Import JSON</button>
+                <button class="fav-action-btn danger" onclick="clearAllFavs()">🗑️ Clear All</button>
+            </div>
+        </div>
+        <div class="fav-list" id="fav-list"></div>
+    </div>
+
+    <div id="stats-bar" class="stats-bar" style="display:none">
+        <div id="stats" class="result-stats"></div>
+        <div id="pages-top" class="pagination pagination-top"></div>
+    </div>
+    <div id="game-list" class="game-list"></div>
+    <div id="pages-bottom" class="pagination"></div>
+</div>
+
+<input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+/* =====================================================
+   STATE
+===================================================== */
+let allData = [];
+const PER_PAGE = 30;
+let currentPage = 1;
+let currentLang = 'english';
+let currentCurrency = 'USD';
+let currentSymbol = '$';
+let currentRate = 1;        // rate vs USD
+let selectedStores = new Set(['all']);
+let favs = {};
+let showingFavs = false;
+
+/* =====================================================
+   CURRENCY HELPERS
+===================================================== */
+function convertUSD(usdAmount) {
+    // แปลง USD float → string ตาม currency ปัจจุบัน
+    if (usdAmount === null || usdAmount === undefined) return '—';
+    const converted = usdAmount * currentRate;
+    const decimals = currentCurrency === 'JPY' ? 0 : 2;
+    return `${currentSymbol}${converted.toFixed(decimals)}`;
+}
+
+function onCurrencyChange() {
+    const sel = document.getElementById('currency-select');
+    const opt = sel.options[sel.selectedIndex];
+    currentCurrency = sel.value;
+    currentSymbol   = opt.getAttribute('data-sym') || '$';
+    currentRate     = parseFloat(opt.getAttribute('data-rate') || '1');
+    // re-render ถ้ามีข้อมูลอยู่แล้ว
+    if (allData.length > 0) render(currentPage);
+}
+
+/* =====================================================
+   LOCALSTORAGE FAVS
+===================================================== */
+const FAV_KEY = 'somagamasu_favs';
+
+function loadFavs() {
+    try { favs = JSON.parse(localStorage.getItem(FAV_KEY) || '{}'); }
+    catch { favs = {}; }
+    updateFavCount();
+}
+function saveFavs() {
+    localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+    updateFavCount();
+}
+function toggleFav(appId, game) {
+    if (favs[appId]) { delete favs[appId]; }
+    else { favs[appId] = { name:game.name, img:game.img, link:game.link, price:game.price, dev:game.dev||'', added:new Date().toISOString() }; }
+    saveFavs();
+    const btn  = document.getElementById(`fav-btn-${appId}`);
+    const card = document.getElementById(`card-${appId}`);
+    if (btn)  btn.classList.toggle('active', !!favs[appId]);
+    if (card) card.classList.toggle('is-fav', !!favs[appId]);
+    if (showingFavs) renderFavPanel();
+}
+function isFav(appId) { return !!favs[appId]; }
+function updateFavCount() { document.getElementById('fav-count').textContent = Object.keys(favs).length; }
+
+function renderFavPanel() {
+    const list = document.getElementById('fav-list');
+    const keys = Object.keys(favs);
+    if (!keys.length) { list.innerHTML = `<div class="fav-empty">⭐ No favourites yet — click the star on any game!</div>`; return; }
+    list.innerHTML = keys.map(id => {
+        const g = favs[id];
+        return `<div class="fav-item">
+            <img src="${g.img}" onerror="this.style.opacity=0" alt="${g.name}">
+            <div class="fav-item-info">
+                <div class="fav-item-name">${g.name}</div>
+                <div class="fav-item-meta">${g.dev||''}${g.price?' · '+g.price:''}</div>
+            </div>
+            <button class="fav-search-btn" onclick="searchFromFav('${g.name.replace(/'/g,"\\'")}')">🔍</button>
+            <button class="fav-remove-btn" onclick="removeFav('${id}')" title="Remove">✕</button>
+        </div>`;
+    }).join('');
+}
+function removeFav(appId) {
+    delete favs[appId]; saveFavs(); renderFavPanel();
+    document.getElementById(`fav-btn-${appId}`)?.classList.remove('active');
+    document.getElementById(`card-${appId}`)?.classList.remove('is-fav');
+}
+function clearAllFavs() {
+    if (!confirm('Clear all favourites?')) return;
+    favs = {}; saveFavs(); renderFavPanel();
+    document.querySelectorAll('.fav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.game-card').forEach(c => c.classList.remove('is-fav'));
+}
+function exportFavs() {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([JSON.stringify(favs,null,2)], {type:'application/json'}));
+    a.download = 'somagamasu_favourites.json'; a.click();
+}
+function importFavs() { document.getElementById('import-file').click(); }
+function handleImport(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+        try { const d = JSON.parse(ev.target.result); favs={...favs,...d}; saveFavs(); renderFavPanel(); alert(`Imported ${Object.keys(d).length} favourites!`); }
+        catch { alert('Invalid JSON file'); }
+    };
+    reader.readAsText(file); e.target.value='';
+}
+function toggleFavPanel() {
+    showingFavs = !showingFavs;
+    document.getElementById('fav-panel').classList.toggle('open', showingFavs);
+    document.getElementById('fav-tab-btn').classList.toggle('active', showingFavs);
+    if (showingFavs) renderFavPanel();
+}
+function searchFromFav(name) {
+    document.getElementById('q').value = name;
+    showingFavs = false;
+    document.getElementById('fav-panel').classList.remove('open');
+    document.getElementById('fav-tab-btn').classList.remove('active');
+    doSearch();
+}
+
+/* =====================================================
+   STORE FILTER
+===================================================== */
+const STORE_MATCH = {
+    steam:    ['steam'],
+    gog:      ['gog'],
+    epic:     ['epic'],
+    humble:   ['humble'],
+    fanatical:['fanatical'],
+    gmg:      ['green man gaming','gmg'],
+    cdkeys:   ['cdkeys','cd keys'],
+    kinguin:  ['kinguin'],
+};
+function toggleChip(el) {
+    const store = el.dataset.store;
+    if (store === 'all') {
+        selectedStores = new Set(['all']);
+        document.querySelectorAll('#store-chips .chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    } else {
+        document.querySelector('.chip.all').classList.remove('active');
+        selectedStores.delete('all');
+        el.classList.toggle('active');
+        if (el.classList.contains('active')) selectedStores.add(store);
+        else selectedStores.delete(store);
+        if (!selectedStores.size) { selectedStores.add('all'); document.querySelector('.chip.all').classList.add('active'); }
+    }
+}
+function filterStores(stores) {
+    if (selectedStores.has('all')) return stores;
+    return stores.filter(s => {
+        const nl = (s.store||'').toLowerCase();
+        return [...selectedStores].some(key => (STORE_MATCH[key]||[key]).some(f => nl.includes(f)));
+    });
+}
+
+/* =====================================================
+   i18n
+===================================================== */
+const i18n = {
+    english:  { label:"// SEARCH GAME DEALS", btn:"SEARCH", hint:'💡 Try partial names — e.g. "Resident Evil", "RE2"', found:"Found", items:"items", page:"Page", of:"of", prev:"← Prev", next:"Next →", noResult:"No games found", noResultSub:"Try a shorter keyword", errConn:"Cannot connect to server", errGen:"An error occurred" },
+    thai:     { label:"// ค้นหาดีลเกม", btn:"ค้นหา", hint:'💡 ลองชื่อย่อ — เช่น "Resident Evil", "RE2"', found:"พบ", items:"รายการ", page:"หน้า", of:"/", prev:"← ก่อนหน้า", next:"ถัดไป →", noResult:"ไม่พบเกม", noResultSub:"ลองพิมพ์ชื่อสั้นลง", errConn:"เชื่อมต่อไม่ได้", errGen:"เกิดข้อผิดพลาด" },
+    french:   { label:"// RECHERCHE DE JEUX", btn:"CHERCHER", hint:'💡 Essayez un nom partiel — "RE2"', found:"Trouvé", items:"résultats", page:"Page", of:"/", prev:"← Préc.", next:"Suiv. →", noResult:"Aucun jeu trouvé", noResultSub:"Essayez un autre mot-clé", errConn:"Connexion impossible", errGen:"Une erreur est survenue" },
+    spanish:  { label:"// BUSCAR JUEGOS", btn:"BUSCAR", hint:'💡 Prueba nombres parciales — "RE2"', found:"Encontrado", items:"resultados", page:"Página", of:"/", prev:"← Ant.", next:"Sig. →", noResult:"No se encontraron juegos", noResultSub:"Intenta con otro término", errConn:"Sin conexión", errGen:"Ocurrió un error" },
+    japanese: { label:"// ゲームを検索", btn:"検索", hint:'💡 シリーズ名でも検索 — 「RE2」', found:"件数", items:"件", page:"ページ", of:"/", prev:"← 前へ", next:"次へ →", noResult:"ゲームが見つかりません", noResultSub:"別のキーワードをお試しください", errConn:"接続できません", errGen:"エラーが発生しました" },
+    schinese: { label:"// 搜索游戏", btn:"搜索", hint:'💡 可以用系列名搜索 — 「RE2」', found:"找到", items:"个结果", page:"第", of:"页/共", prev:"← 上一页", next:"下一页 →", noResult:"未找到游戏", noResultSub:"请尝试其他关键词", errConn:"无法连接", errGen:"发生错误" },
+};
+function t(k) { return (i18n[currentLang]||i18n.english)[k]||''; }
+
+/* =====================================================
+   CONTROLS
+===================================================== */
+function setFont(size, el) {
+    document.documentElement.setAttribute('data-font', size);
+    document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+    if (el) el.classList.add('active');
+}
+function setTheme(theme, el) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+    if (el) el.classList.add('active');
+}
+function onLangChange() {
+    const sel = document.getElementById('lang-select');
+    const opt = sel.options[sel.selectedIndex];
+    currentLang = sel.value;
+    document.getElementById('q').placeholder = opt.getAttribute('data-ph') || '';
+    document.getElementById('search-label').textContent = t('label');
+    document.getElementById('search-btn-text').textContent = t('btn');
+    document.getElementById('search-hint').textContent = t('hint');
+
+    // Auto-set currency to match language default
+    const defaultCur = opt.getAttribute('data-cur') || 'USD';
+    const defaultSym = opt.getAttribute('data-sym') || '$';
+    const curSel = document.getElementById('currency-select');
+    for (let i=0; i<curSel.options.length; i++) {
+        if (curSel.options[i].value === defaultCur) {
+            curSel.selectedIndex = i;
+            currentCurrency = defaultCur;
+            currentSymbol   = defaultSym;
+            currentRate     = parseFloat(curSel.options[i].getAttribute('data-rate') || '1');
+            break;
+        }
+    }
+    if (allData.length > 0) render(currentPage);
+}
+
+/* =====================================================
+   SEARCH
+===================================================== */
+async function doSearch() {
+    const query = document.getElementById('q').value.trim();
+    if (!query) return;
+    showLoading();
+    try {
+        const res = await fetch('/search', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ game_name: query, lang: currentLang })
+        });
+        const result = await res.json();
+        if (result.status === 'success') {
+            allData = result.data || [];
+            currentPage = 1;
+            render(1);
+        } else {
+            showError(result.message || t('errGen'));
+        }
+    } catch { showError(t('errConn')); }
+}
+
+/* =====================================================
+   RENDER
+===================================================== */
+function render(page) {
+    currentPage = page;
+    const start = (page-1) * PER_PAGE;
+    const slice = allData.slice(start, start+PER_PAGE);
+    const total = allData.length;
+    const totalPages = Math.ceil(total/PER_PAGE);
+
+    const statsBar = document.getElementById('stats-bar');
+    statsBar.style.display = 'flex';
+    document.getElementById('stats').innerHTML =
+        `${t('found')} <b>${total}</b> ${t('items')} &nbsp;·&nbsp; ${t('page')} <b>${page}</b> ${t('of')} <b>${totalPages}</b>`;
+
+    document.getElementById('game-list').innerHTML = slice.length === 0
+        ? `<div class="empty-state"><div class="icon">🎮</div><p>${t('noResult')}<br><small>${t('noResultSub')}</small></p></div>`
+        : slice.map(g => renderCard(g)).join('');
+
+    const pH = buildPagination(total, page);
+    document.getElementById('pages-top').innerHTML = pH;
+    document.getElementById('pages-bottom').innerHTML = pH;
+
+    statsBar.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+/* =====================================================
+   CARD
+===================================================== */
+function renderCard(g) {
+    const badgeMap = {
+        forever:   ['FOREVER SALE','badge-forever'],
+        legendary: ['LEGENDARY','badge-legendary'],
+        rare:      ['RARE SALE','badge-rare'],
+        sale:      ['ON SALE','badge-sale'],
+    };
+    const [blabel, bcls] = (g.sale_type && badgeMap[g.sale_type]) ? badgeMap[g.sale_type] : ['',''];
+    const badge    = blabel ? `<div class="badge ${bcls}">${blabel}</div>` : '';
+    const discHtml = g.discount ? `<div class="discount-pct">-${g.discount}%</div>` : '';
+    const origHtml = g.original_price ? `<div class="price-orig">${g.original_price}</div>` : '';
+
+    const devHtml = g.dev     ? `<span class="meta-tag dev">DEV: ${g.dev}</span>` : '';
+    const pubHtml = (g.publisher && g.publisher !== g.dev) ? `<span class="meta-tag pub">PUB: ${g.publisher}</span>` : '';
+    const genHtml = g.genre   ? `<span class="meta-tag">${g.genre}</span>` : '';
+    const relHtml = g.release ? `<span class="meta-tag release">${g.release}</span>` : '';
+    const mcHtml  = g.metacritic ? `<span class="meta-tag mc">MC ${g.metacritic}</span>` : '';
+
+    // STORE DROPDOWN — convert USD prices + filter by chip
+    const rawStores = g.other_stores || [];
+    const hasSteam = rawStores.some(s => s.store.toLowerCase().includes('steam'));
+    const allStores = hasSteam ? rawStores : [
+        { store:'Steam', icon:'🎮', price_usd:null, retail_usd:null, price:g.price, discount:g.discount, url:g.link },
+        ...rawStores
+    ];
+
+    // แปลงราคา USD → currency ปัจจุบัน
+    const converted = allStores.map(s => {
+        const priceStr = s.price_usd !== null && s.price_usd !== undefined
+            ? convertUSD(s.price_usd)
+            : s.price; // Steam ส่งมา formatted แล้ว
+        const origStr  = s.retail_usd ? convertUSD(s.retail_usd) : '';
+        const disc     = s.discount ? ` -${s.discount}%` : '';
+        const label    = `${s.icon||'🏬'} ${s.store}${disc} · ${priceStr}`;
+        return { ...s, priceStr, origStr, label };
+    });
+
+    const filtered = filterStores(converted);
+    const display  = filtered.length > 0 ? filtered : converted;
+
+    const appId = g.app_id || Math.random().toString(36).slice(2);
+    const uid   = `store_${appId}`;
+    const favCls = isFav(appId) ? 'active' : '';
+    const cardFavCls = isFav(appId) ? 'is-fav' : '';
+    const favStar = isFav(appId) ? '⭐' : '☆';
+
+    const options = display.map(s =>
+        `<option value="${encodeURIComponent(s.url)}">${s.label}</option>`
+    ).join('');
+
+    const gameJson = JSON.stringify({name:g.name,img:g.img,link:g.link,price:g.price,dev:g.dev||''}).replace(/'/g,"\\'");
+
+    return `
+    <div class="game-card ${cardFavCls}" id="card-${appId}">
+        <div class="game-img-wrap">
+            <img src="${g.img}" class="game-img" alt="${g.name}" loading="lazy" onerror="this.style.opacity=0">
+            <button class="fav-btn ${favCls}" id="fav-btn-${appId}"
+                onclick='toggleFav("${appId}",${gameJson})' title="Favourite">${favStar}</button>
+        </div>
+        <div class="game-info">
+            <div class="game-title">${g.name}</div>
+            <div class="game-meta">${devHtml}${pubHtml}${genHtml}${relHtml}${mcHtml}</div>
+        </div>
+        <div class="sale-col">${badge}${discHtml}</div>
+        <div class="price-col"><div class="price-now">${g.price}</div>${origHtml}</div>
+        <div class="buy-col">
+            <div class="store-select-wrap">
+                <select class="store-dropdown" id="${uid}">${options}</select>
+                <button class="buy-btn" onclick="buyNow('${uid}')">BUY NOW ↗</button>
+                <div class="store-count">${display.length} store${display.length!==1?'s':''} available</div>
+            </div>
+        </div>
+    </div>`;
+}
+
+function buyNow(uid) {
+    const sel = document.getElementById(uid);
+    if (sel?.value) window.open(decodeURIComponent(sel.value), '_blank');
+}
+
+/* =====================================================
+   PAGINATION
+===================================================== */
+function buildPagination(total, current) {
+    const pages = Math.ceil(total/PER_PAGE);
+    if (pages <= 1) return '';
+    let html = '';
+    if (current > 1) html += `<div class="page-btn" onclick="render(${current-1})">${t('prev')}</div>`;
+    let s = Math.max(1,current-3), e = Math.min(pages,s+6);
+    if (e-s < 6) s = Math.max(1,e-6);
+    if (s > 1) html += `<div class="page-btn" onclick="render(1)">1</div><span class="page-ellipsis">…</span>`;
+    for (let i=s;i<=e;i++) html += `<div class="page-btn ${i===current?'active':''}" onclick="render(${i})">${i}</div>`;
+    if (e < pages) html += `<span class="page-ellipsis">…</span><div class="page-btn" onclick="render(${pages})">${pages}</div>`;
+    if (current < pages) html += `<div class="page-btn" onclick="render(${current+1})">${t('next')}</div>`;
+    return html;
+}
+
+/* =====================================================
+   LOADING / ERROR
+===================================================== */
+function showLoading() {
+    document.getElementById('stats-bar').style.display = 'none';
+    ['pages-top','pages-bottom'].forEach(id => document.getElementById(id).innerHTML='');
+    document.getElementById('game-list').innerHTML =
+        `<div class="loading"><div class="spinner"></div>${t('btn')}ING...</div>`;
+}
+function showError(msg) {
+    document.getElementById('game-list').innerHTML =
+        `<div class="empty-state"><div class="icon">⚠️</div><p>${msg}</p></div>`;
+}
+
+/* =====================================================
+   INIT
+===================================================== */
+loadFavs();
+</script>
+</body>
+</html>
