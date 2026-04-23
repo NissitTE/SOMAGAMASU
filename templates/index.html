@@ -182,6 +182,29 @@
             .sale-col,.price-col,.buy-col { display:none; }
             .header,.container,.search-area { padding-left:14px; padding-right:14px; }
         }
+        /* เพิ่มโค้ดนี้ลงไปในส่วน <style> ล่างสุด */
+@media (max-width: 600px) {
+    .game-list {
+        grid-template-columns: 1fr !important; /* บังคับให้แสดงแถวละ 1 ตัว */
+        padding: 10px;
+    }
+
+    .game-card {
+        flex-direction: column; /* ถ้าใช้ flex ให้เรียงเป็นแนวตั้ง */
+        width: 100% !important;
+        margin-bottom: 15px;
+    }
+
+    .game-image {
+        width: 100% !important; /* ให้รูปกว้างเต็มจอ */
+        height: auto !important;
+    }
+    
+    /* ปรับขนาดฟอนต์หัวข้อให้เล็กลงนิดนึงในมือถือ */
+    .game-title {
+        font-size: 1.1rem !important;
+    }
+}
     </style>
 </head>
 <body>
