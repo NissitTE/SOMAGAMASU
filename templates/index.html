@@ -94,7 +94,7 @@
         body { background:var(--bg); color:var(--text); font-family:'Prompt',sans-serif; transition:background .3s,color .3s; min-height:100vh; }
 
         /* ===== HEADER ===== */
-        .header { background:var(--bg2); border-bottom:1px solid var(--border); padding:12px 28px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(10px); gap:10px; flex-wrap:wrap; }
+        .header { background:var(--bg2); border-bottom:1px solid var(--border); padding:10px 20px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; backdrop-filter:blur(10px); gap:8px; flex-wrap:wrap; }
         .logo { font-family:'Space Mono',monospace; font-size:1.05em; font-weight:700; color:var(--accent); letter-spacing:2px; white-space:nowrap; cursor:default; }
         .logo .sub   { color:var(--text-sub); font-weight:400; font-size:.58em; display:block; letter-spacing:3px; margin-top:1px; }
         .logo .credit{ color:var(--text-sub); font-size:.52em; font-family:'Prompt',sans-serif; font-weight:300; letter-spacing:1px; margin-top:1px; }
@@ -116,14 +116,34 @@
         .fav-tab-btn.active { background:rgba(241,196,15,.15); border-color:var(--fav); }
 
         /* ===== SEARCH ===== */
-        .search-area  { padding:28px 36px 18px; max-width:960px; margin:0 auto; }
-        .search-label { font-size:.64em; font-family:'Space Mono',monospace; color:var(--text-sub); letter-spacing:3px; text-transform:uppercase; margin-bottom:10px; }
-        .search-row   { display:flex; gap:9px; flex-wrap:wrap; }
-        .search-input { flex:1; min-width:180px; padding:11px 16px; background:var(--input-bg); border:1px solid var(--border); border-radius:10px; color:var(--text); font-family:'Prompt',sans-serif; font-size:.93em; outline:none; transition:border-color .2s,box-shadow .2s; }
+        .search-area  { padding:10px 28px 8px; max-width:100%; background:var(--bg2); border-bottom:1px solid var(--border); position:sticky; top:57px; z-index:90; backdrop-filter:blur(10px); }
+        .search-label { font-size:.58em; font-family:'Space Mono',monospace; color:var(--text-sub); letter-spacing:3px; text-transform:uppercase; margin-bottom:6px; }
+        .search-row   { display:flex; gap:7px; flex-wrap:nowrap; }
+        .search-input { flex:1; min-width:120px; padding:8px 14px; background:var(--input-bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'Prompt',sans-serif; font-size:.82em; outline:none; transition:border-color .2s,box-shadow .2s; }
         .search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-glow); }
         .search-input::placeholder { color:var(--text-sub); }
-        .search-btn   { padding:11px 24px; background:var(--accent); color:var(--bg); border:none; border-radius:10px; font-family:'Space Mono',monospace; font-weight:700; font-size:.78em; cursor:pointer; letter-spacing:1px; transition:opacity .2s,transform .15s; white-space:nowrap; }
+        .search-btn   { padding:8px 18px; background:var(--accent); color:var(--bg); border:none; border-radius:8px; font-family:'Space Mono',monospace; font-weight:700; font-size:.72em; cursor:pointer; letter-spacing:1px; transition:opacity .2s,transform .15s; white-space:nowrap; }
         .search-btn:hover { opacity:.85; transform:translateY(-1px); }
+
+        /* FILTER ROW — shared compact row */
+        .filter-row-wrap { display:flex; flex-wrap:wrap; gap:5px 14px; margin-top:5px; align-items:center; }
+        .filter-group    { display:flex; align-items:center; gap:5px; flex-wrap:wrap; }
+        .filter-label    { font-size:.56em; color:var(--text-sub); font-family:'Space Mono',monospace; white-space:nowrap; letter-spacing:.5px; }
+
+        /* DEV/GENRE SEARCH ROW */
+        .devgenre-row  { display:flex; gap:7px; flex-wrap:nowrap; margin-top:5px; }
+        .devgenre-input{ flex:1; min-width:80px; padding:6px 11px; background:var(--input-bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-family:'Prompt',sans-serif; font-size:.78em; outline:none; transition:border-color .2s; }
+        .devgenre-input:focus { border-color:var(--accent); }
+        .devgenre-input::placeholder { color:var(--text-sub); }
+        .devgenre-clear { background:none; border:none; color:var(--text-sub); font-size:.8em; cursor:pointer; padding:0 4px; flex-shrink:0; transition:color .2s; }
+        .devgenre-clear:hover { color:var(--sale); }
+
+        /* EXPLORE MODE BADGE */
+        .explore-badge { display:inline-flex; align-items:center; gap:5px; padding:3px 10px; border-radius:20px; background:var(--accent-glow); border:1px solid var(--accent); font-size:.58em; font-family:'Space Mono',monospace; color:var(--accent); letter-spacing:1px; }
+
+        /* FOOTER */
+        .site-footer { text-align:center; padding:22px 20px 18px; border-top:1px solid var(--border); margin-top:30px; }
+        .footer-note { font-size:.58em; color:var(--text-sub); font-family:'Space Mono',monospace; font-style:italic; line-height:1.7; }
 
         /* X CLEAR BUTTON */
         .search-x { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-sub); font-size:1em; cursor:pointer; padding:4px 6px; border-radius:5px; display:none; line-height:1; transition:color .2s; }
@@ -131,29 +151,21 @@
         .search-input-wrap { position:relative; flex:1; min-width:180px; display:flex; }
         .search-input-wrap .search-input { width:100%; padding-right:34px; }
 
-        /* SALE FILTER ROW */
-        .sale-filter-row { display:flex; align-items:center; gap:9px; margin-top:6px; flex-wrap:wrap; }
-        .sale-filter-label { font-size:.63em; color:var(--text-sub); font-family:'Space Mono',monospace; white-space:nowrap; }
+        /* SALE / STORE CHIPS */
+        .store-chips  { display:flex; gap:4px; flex-wrap:wrap; }
+        .chip { padding:2px 8px; border:1px solid var(--border); border-radius:20px; font-size:.58em; font-family:'Space Mono',monospace; color:var(--text-sub); cursor:pointer; transition:all .2s; user-select:none; }
+        .chip:hover { border-color:var(--accent); color:var(--accent); }
+        .chip.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
+        .chip.all { border-color:var(--accent2); color:var(--accent2); }
+        .chip.all.active { background:var(--accent2); color:var(--bg); border-color:var(--accent2); }
         .chip.sale-chip { border-color:var(--sale-border,var(--sale)); color:var(--sale); }
         .chip.sale-chip.active { background:var(--sale); color:#fff; border-color:var(--sale); }
         .chip.rare-chip { border-color:var(--rare-border,var(--rare)); color:var(--rare); }
         .chip.rare-chip.active { background:var(--rare); color:#000; border-color:var(--rare); }
         .chip.legendary-chip { border-color:var(--legendary-border,var(--legendary)); color:var(--legendary); }
         .chip.legendary-chip.active { background:var(--legendary); color:#000; border-color:var(--legendary); }
-
-        /* STORE FILTER */
-        .store-filter-row { display:flex; align-items:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
-        .store-filter-label { font-size:.63em; color:var(--text-sub); font-family:'Space Mono',monospace; white-space:nowrap; }
-        .store-chips  { display:flex; gap:5px; flex-wrap:wrap; }
-        .chip { padding:3px 9px; border:1px solid var(--border); border-radius:20px; font-size:.63em; font-family:'Space Mono',monospace; color:var(--text-sub); cursor:pointer; transition:all .2s; user-select:none; }
-        .chip:hover { border-color:var(--accent); color:var(--accent); }
-        .chip.active { background:var(--accent); color:var(--bg); border-color:var(--accent); }
-        .chip.all { border-color:var(--accent2); color:var(--accent2); }
-        .chip.all.active { background:var(--accent2); color:var(--bg); border-color:var(--accent2); }
-        .search-hint  { font-size:.62em; color:var(--text-sub); margin-top:7px; font-family:'Space Mono',monospace; }
-
-        /* CURRENCY NOTE */
-        .currency-note { font-size:.6em; color:var(--text-sub); font-family:'Space Mono',monospace; margin-top:4px; font-style:italic; }
+        .chip.forever-chip { border-color:var(--forever-border,var(--forever)); color:var(--forever); }
+        .chip.forever-chip.active { background:var(--forever); color:#000; border-color:var(--forever); }
 
         /* ===== CONTAINER ===== */
         .container { max-width:1440px; margin:0 auto; padding:0 36px 60px; }
@@ -257,7 +269,10 @@
         @media(max-width:960px){
             .game-card { grid-template-columns:108px 1fr; }
             .sale-col,.price-col,.buy-col { display:none; }
-            .header,.container,.search-area { padding-left:14px; padding-right:14px; }
+            .header,.container { padding-left:12px; padding-right:12px; }
+            .search-area { padding:8px 12px 6px; }
+            .devgenre-row { flex-wrap:wrap; }
+            .filter-row-wrap { gap:4px 8px; }
         }
     </style>
 </head>
@@ -320,9 +335,11 @@
     </div>
 </header>
 
-<!-- SEARCH -->
-<div class="search-area">
+<!-- SEARCH (sticky) -->
+<div class="search-area" id="search-area">
     <div class="search-label" id="search-label">// SEARCH GAME DEALS</div>
+
+    <!-- Main search row -->
     <div class="search-row">
         <div class="search-input-wrap">
             <input type="text" id="q" class="search-input"
@@ -333,35 +350,44 @@
         <button class="search-btn" id="search-btn-text" onclick="doSearch()">SEARCH</button>
     </div>
 
-    <!-- SALE TYPE FILTER -->
-    <div class="sale-filter-row">
-        <span class="sale-filter-label">SALE TYPE:</span>
-        <div class="store-chips" id="sale-chips">
-            <div class="chip all active" data-sale="all" onclick="toggleSaleChip(this)">🌐 All</div>
-            <div class="chip sale-chip" data-sale="sale" onclick="toggleSaleChip(this)">🔴 On Sale</div>
-            <div class="chip rare-chip" data-sale="rare" onclick="toggleSaleChip(this)">🥇 Rare Sale</div>
-            <div class="chip legendary-chip" data-sale="legendary" onclick="toggleSaleChip(this)">💎 Legendary</div>
-            <div class="chip legendary-chip" data-sale="forever" onclick="toggleSaleChip(this)">♾ Forever</div>
-        </div>
+    <!-- Dev / Genre filter row -->
+    <div class="devgenre-row">
+        <input type="text" id="q-dev" class="devgenre-input"
+               placeholder="🎮 Developer... e.g. FromSoftware, Capcom"
+               oninput="applyLocalFilters()" onkeydown="if(event.key==='Escape')clearDevGenre()">
+        <input type="text" id="q-genre" class="devgenre-input"
+               placeholder="🏷 Genre... e.g. RPG, Horror, Action"
+               oninput="applyLocalFilters()" onkeydown="if(event.key==='Escape')clearDevGenre()">
+        <button class="devgenre-clear" id="devgenre-clear" title="Clear filters" style="display:none" onclick="clearDevGenre()">✕</button>
     </div>
 
-    <!-- STORE FILTER -->
-    <div class="store-filter-row">
-        <span class="store-filter-label">STORES:</span>
-        <div class="store-chips" id="store-chips">
-            <div class="chip all active" data-store="all"      onclick="toggleChip(this)">🌐 All</div>
-            <div class="chip" data-store="steam"     onclick="toggleChip(this)">🎮 Steam</div>
-            <div class="chip" data-store="gog"       onclick="toggleChip(this)">🌌 GOG</div>
-            <div class="chip" data-store="epic"      onclick="toggleChip(this)">⚡ Epic</div>
-            <div class="chip" data-store="humble"    onclick="toggleChip(this)">🎁 Humble</div>
-            <div class="chip" data-store="fanatical" onclick="toggleChip(this)">🔥 Fanatical</div>
-            <div class="chip" data-store="gmg"       onclick="toggleChip(this)">🟢 GMG</div>
-            <div class="chip" data-store="cdkeys"    onclick="toggleChip(this)">🔑 CDKeys</div>
-            <div class="chip" data-store="kinguin"   onclick="toggleChip(this)">👑 Kinguin</div>
+    <!-- Compact filter rows -->
+    <div class="filter-row-wrap">
+        <div class="filter-group">
+            <span class="filter-label">SALE:</span>
+            <div class="store-chips" id="sale-chips">
+                <div class="chip all active" data-sale="all"       onclick="toggleSaleChip(this)">All</div>
+                <div class="chip sale-chip"  data-sale="sale"      onclick="toggleSaleChip(this)">🔴 On Sale</div>
+                <div class="chip rare-chip"  data-sale="rare"      onclick="toggleSaleChip(this)">🥇 Rare</div>
+                <div class="chip legendary-chip" data-sale="legendary" onclick="toggleSaleChip(this)">💎 Legendary</div>
+                <div class="chip forever-chip"   data-sale="forever"   onclick="toggleSaleChip(this)">♾ Forever</div>
+            </div>
+        </div>
+        <div class="filter-group">
+            <span class="filter-label">STORE:</span>
+            <div class="store-chips" id="store-chips">
+                <div class="chip all active" data-store="all"      onclick="toggleChip(this)">All</div>
+                <div class="chip" data-store="steam"     onclick="toggleChip(this)">🎮 Steam</div>
+                <div class="chip" data-store="gog"       onclick="toggleChip(this)">🌌 GOG</div>
+                <div class="chip" data-store="epic"      onclick="toggleChip(this)">⚡ Epic</div>
+                <div class="chip" data-store="humble"    onclick="toggleChip(this)">🎁 Humble</div>
+                <div class="chip" data-store="fanatical" onclick="toggleChip(this)">🔥 Fanatical</div>
+                <div class="chip" data-store="gmg"       onclick="toggleChip(this)">🟢 GMG</div>
+                <div class="chip" data-store="cdkeys"    onclick="toggleChip(this)">🔑 CDKeys</div>
+                <div class="chip" data-store="kinguin"   onclick="toggleChip(this)">👑 Kinguin</div>
+            </div>
         </div>
     </div>
-    <div class="search-hint" id="search-hint">💡 Try partial names or series — e.g. "Resident Evil", "RE2"</div>
-    <div class="currency-note" id="currency-note">💱 Steam prices shown in local currency · Other store prices in USD converted to selected currency (approximate)</div>
 </div>
 
 <!-- FAVOURITES PANEL -->
@@ -388,21 +414,48 @@
 
 <input type="file" id="import-file" accept=".json" style="display:none" onchange="handleImport(event)">
 
+<!-- FOOTER -->
+<footer class="site-footer">
+    <div class="footer-note" id="footer-currency-note">
+        💱 Steam prices shown in local currency · Other store prices in USD converted to selected currency (approximate)<br>
+        Somagamasu · Game Deal Engine · by Nissit T · TH &nbsp;·&nbsp; Data from Steam &amp; CheapShark API
+    </div>
+</footer>
+
 <script>
 /* =====================================================
    STATE
 ===================================================== */
 let allData = [];
-const PER_PAGE = 30;
+const PER_PAGE = 20;          // 20 per page as requested
 let currentPage = 1;
 let currentLang = 'english';
 let currentCurrency = 'USD';
 let currentSymbol = '$';
-let currentRate = 1;        // rate vs USD
+let currentRate = 1;
 let selectedStores = new Set(['all']);
 let selectedSaleType = new Set(['all']);
 let favs = {};
 let showingFavs = false;
+let exploreMode = false;      // true when browsing by sale type (no query)
+let devFilter = '';
+let genreFilter = '';
+
+/* =====================================================
+   EXPLORE CATALOG — curated popular game appIDs for
+   "browse by sale type" without typing a search term.
+   We load each via Steam API in scraper, here we just
+   kick off a special /search with well-known keywords.
+===================================================== */
+const EXPLORE_QUERIES = [
+    'Resident Evil', 'Dark Souls', 'Witcher', 'GTA',
+    'Elden Ring', 'Cyberpunk', 'Skyrim', 'Doom',
+    'Sekiro', 'Baldur', 'Hades', 'Hollow Knight',
+    'Deep Rock', 'Terraria', 'Stardew', 'Factorio',
+    'Portal', 'Half Life', 'Counter Strike', 'Dota',
+    'Monster Hunter', 'Devil May Cry', 'Persona',
+    'Final Fantasy', 'Dragon Age', 'Mass Effect',
+];
 
 /* =====================================================
    CURRENCY HELPERS
@@ -553,19 +606,104 @@ function toggleSaleChip(el) {
         selectedSaleType = new Set(['all']);
         document.querySelectorAll('#sale-chips .chip').forEach(c => c.classList.remove('active'));
         el.classList.add('active');
+        exploreMode = false;
     } else {
         allChip.classList.remove('active');
         selectedSaleType.delete('all');
         el.classList.toggle('active');
         if (el.classList.contains('active')) selectedSaleType.add(sale);
         else selectedSaleType.delete(sale);
-        if (!selectedSaleType.size) { selectedSaleType.add('all'); allChip.classList.add('active'); }
+        if (!selectedSaleType.size) {
+            selectedSaleType.add('all');
+            allChip.classList.add('active');
+            exploreMode = false;
+        }
     }
-    if (allData.length > 0) render(1);
+
+    // If no query typed → trigger Explore Mode
+    const query = document.getElementById('q').value.trim();
+    if (!query && !selectedSaleType.has('all')) {
+        doExplore();
+    } else if (allData.length > 0) {
+        render(1);
+    }
 }
+
 function filterBySale(data) {
     if (selectedSaleType.has('all')) return data;
     return data.filter(g => selectedSaleType.has(g.sale_type || ''));
+}
+
+/* =====================================================
+   EXPLORE MODE — search multiple popular keywords,
+   merge + deduplicate, then filter by selected sale type
+===================================================== */
+async function doExplore() {
+    exploreMode = true;
+    showLoading();
+    const btn = document.getElementById('search-btn-text');
+    btn.disabled = true; btn.style.opacity = '.55';
+
+    // Pick 5 random queries to keep it fresh
+    const picks = [...EXPLORE_QUERIES].sort(()=>Math.random()-.5).slice(0, 5);
+
+    try {
+        const results = await Promise.all(picks.map(q =>
+            fetch('/search', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ game_name: q, lang: currentLang })
+            }).then(r => r.json()).then(r => r.data || []).catch(()=>[])
+        ));
+
+        // Merge + deduplicate by app_id
+        const seen = new Set();
+        const merged = [];
+        for (const arr of results) {
+            for (const g of arr) {
+                const key = g.app_id || g.name;
+                if (!seen.has(key)) { seen.add(key); merged.push(g); }
+            }
+        }
+
+        // Keep only items with a sale_type matching selection
+        allData = merged.filter(g => selectedSaleType.has(g.sale_type || ''));
+        // Sort: most discounted first
+        allData.sort((a,b) => (b.discount||0) - (a.discount||0));
+        currentPage = 1;
+        render(1);
+    } catch {
+        showError('Explore failed — try a manual search');
+    } finally {
+        btn.disabled = false; btn.style.opacity = '';
+    }
+}
+
+/* =====================================================
+   DEV / GENRE LOCAL FILTER
+===================================================== */
+function applyLocalFilters() {
+    devFilter   = document.getElementById('q-dev').value.trim().toLowerCase();
+    genreFilter = document.getElementById('q-genre').value.trim().toLowerCase();
+    const hasFil = devFilter || genreFilter;
+    document.getElementById('devgenre-clear').style.display = hasFil ? 'block' : 'none';
+    if (allData.length > 0) render(1);
+}
+
+function clearDevGenre() {
+    document.getElementById('q-dev').value = '';
+    document.getElementById('q-genre').value = '';
+    devFilter = ''; genreFilter = '';
+    document.getElementById('devgenre-clear').style.display = 'none';
+    if (allData.length > 0) render(1);
+}
+
+function applyDevGenreFilter(data) {
+    return data.filter(g => {
+        const devOk  = !devFilter   || (g.dev||'').toLowerCase().includes(devFilter)   || (g.publisher||'').toLowerCase().includes(devFilter);
+        const genOk  = !genreFilter || (g.genre||'').toLowerCase().includes(genreFilter);
+        return devOk && genOk;
+    });
 }
 
 /* X BUTTON */
@@ -613,7 +751,6 @@ function onLangChange() {
     document.getElementById('q').placeholder = opt.getAttribute('data-ph') || '';
     document.getElementById('search-label').textContent = t('label');
     document.getElementById('search-btn-text').textContent = t('btn');
-    document.getElementById('search-hint').textContent = t('hint');
 
     // Auto-set currency to match language default
     const defaultCur = opt.getAttribute('data-cur') || 'USD';
@@ -682,7 +819,8 @@ function onSearchKey(e) {
 ===================================================== */
 function render(page) {
     currentPage = page;
-    const filtered = filterBySale(allData);
+    let filtered = filterBySale(allData);
+    filtered = applyDevGenreFilter(filtered);
     const start = (page-1) * PER_PAGE;
     const slice = filtered.slice(start, start+PER_PAGE);
     const total = filtered.length;
@@ -690,8 +828,9 @@ function render(page) {
 
     const statsBar = document.getElementById('stats-bar');
     statsBar.style.display = 'flex';
+    const exploreTag = exploreMode ? `&nbsp;<span class="explore-badge">✦ EXPLORE MODE</span>` : '';
     document.getElementById('stats').innerHTML =
-        `${t('found')} <b>${total}</b> ${t('items')} &nbsp;·&nbsp; ${t('page')} <b>${page}</b> ${t('of')} <b>${totalPages}</b>`;
+        `${t('found')} <b>${total}</b> ${t('items')} &nbsp;·&nbsp; ${t('page')} <b>${page}</b> ${t('of')} <b>${totalPages}</b>${exploreTag}`;
 
     document.getElementById('game-list').innerHTML = slice.length === 0
         ? `<div class="empty-state"><div class="icon">🎮</div><p>${t('noResult')}<br><small>${t('noResultSub')}</small></p></div>`
@@ -833,6 +972,17 @@ function showError(msg) {
    INIT
 ===================================================== */
 loadFavs();
+
+/* Sticky search area: position just below header */
+(function() {
+    function fixSearchTop() {
+        const h = document.querySelector('.header');
+        const s = document.getElementById('search-area');
+        if (h && s) s.style.top = h.offsetHeight + 'px';
+    }
+    fixSearchTop();
+    window.addEventListener('resize', fixSearchTop);
+})();
 
 /* Restore saved theme + font */
 (function(){
