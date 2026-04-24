@@ -3,7 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Somagamasu Engine</title>
+    <title>Somagamasu — Game Deal Engine</title>
+
+    <!-- SEO -->
+    <meta name="description" content="ค้นหาดีลเกม PC ราคาถูกที่สุดจากทุก Store — Steam, GOG, Epic, Humble และอีกมากมาย | Find the best PC game deals across all stores">
+    <meta name="keywords" content="game deals, steam sale, cheap games, somagamasu, ดีลเกม, เกมราคาถูก">
+    <meta name="author" content="Nissit T">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://somagamasu.onrender.com/">
+
+    <!-- Open Graph (Facebook / Line / Discord) -->
+    <meta property="og:type"        content="website">
+    <meta property="og:url"         content="https://somagamasu.onrender.com/">
+    <meta property="og:title"       content="Somagamasu — Game Deal Engine">
+    <meta property="og:description" content="ค้นหาดีลเกม PC ราคาถูกที่สุดจากทุก Store ในที่เดียว | Find the cheapest PC game deals across Steam, GOG, Epic & more">
+    <meta property="og:image"       content="https://somagamasu.onrender.com/static/og-cover.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:locale"      content="th_TH">
+    <meta property="og:locale:alternate" content="en_US">
+    <meta property="og:site_name"   content="Somagamasu">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card"        content="summary_large_image">
+    <meta name="twitter:title"       content="Somagamasu — Game Deal Engine">
+    <meta name="twitter:description" content="Find the cheapest PC game deals across all stores">
+    <meta name="twitter:image"       content="https://somagamasu.onrender.com/static/og-cover.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* ===== THEMES ===== */
@@ -151,9 +177,14 @@
         .game-card:hover   { background:var(--card-hover); border-color:var(--accent); transform:translateY(-1px); }
         .game-card.is-fav  { border-color:var(--fav) !important; }
 
-        .game-img-wrap { height:94px; overflow:hidden; position:relative; }
-        .game-img { width:100%; height:100%; object-fit:cover; transition:transform .4s; }
-        .game-card:hover .game-img { transform:scale(1.06); }
+        .game-img-wrap { height:94px; overflow:hidden; position:relative; background:var(--bg2); }
+        .game-img { width:100%; height:100%; object-fit:cover; transition:transform .4s,opacity .3s; }
+        .game-img.errored { opacity:0; }
+        .game-img-placeholder { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; opacity:0; transition:opacity .3s; pointer-events:none; }
+        .game-img-placeholder svg { width:38px; height:38px; opacity:.18; }
+        .game-img-placeholder .ph-label { font-family:'Space Mono',monospace; font-size:.42em; color:var(--text-sub); opacity:.5; margin-top:4px; letter-spacing:1px; }
+        .game-img-wrap.img-failed .game-img-placeholder { opacity:1; }
+        .game-card:hover .game-img:not(.errored) { transform:scale(1.06); }
 
         .fav-btn { position:absolute; top:5px; left:5px; background:rgba(0,0,0,.55); border:none; border-radius:50%; width:26px; height:26px; font-size:.95em; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform .2s,background .2s; z-index:2; backdrop-filter:blur(4px); }
         .fav-btn:hover  { transform:scale(1.2); background:rgba(0,0,0,.8); }
@@ -296,7 +327,7 @@
         <div class="search-input-wrap">
             <input type="text" id="q" class="search-input"
                    placeholder="Search game... e.g. Resident Evil 2, Elden Ring"
-                   oninput="toggleXBtn()" onkeydown="if(event.key==='Enter') doSearch()">
+                   oninput="toggleXBtn()" onkeydown="onSearchKey(event)">
             <button class="search-x" id="search-x-btn" onclick="clearSearch()" title="Clear">✕</button>
         </div>
         <button class="search-btn" id="search-btn-text" onclick="doSearch()">SEARCH</button>
@@ -603,9 +634,19 @@ function onLangChange() {
 /* =====================================================
    SEARCH
 ===================================================== */
+let _searchTimer = null;
+let _searching = false;
+
 async function doSearch() {
+    if (_searching) return;                     // กันกด ซ้ำขณะ loading
     const query = document.getElementById('q').value.trim();
     if (!query) return;
+
+    _searching = true;
+    const btn = document.getElementById('search-btn-text');
+    btn.disabled = true;
+    btn.style.opacity = '.55';
+
     showLoading();
     try {
         const res = await fetch('/search', {
@@ -622,6 +663,18 @@ async function doSearch() {
             showError(result.message || t('errGen'));
         }
     } catch { showError(t('errConn')); }
+    finally {
+        _searching = false;
+        btn.disabled = false;
+        btn.style.opacity = '';
+    }
+}
+
+// Debounce helper สำหรับ Enter key (300 ms) — ป้องกัน retype เร็ว
+function onSearchKey(e) {
+    if (e.key !== 'Enter') return;
+    clearTimeout(_searchTimer);
+    _searchTimer = setTimeout(doSearch, 300);
 }
 
 /* =====================================================
@@ -708,8 +761,19 @@ function renderCard(g) {
 
     return `
     <div class="game-card ${cardFavCls}" id="card-${appId}">
-        <div class="game-img-wrap">
-            <img src="${g.img}" class="game-img" alt="${g.name}" loading="lazy" onerror="this.style.opacity=0">
+        <div class="game-img-wrap" id="imgwrap-${appId}">
+            <img src="${g.img}" class="game-img" alt="${g.name}" loading="lazy"
+                 onerror="this.classList.add('errored');document.getElementById('imgwrap-${appId}').classList.add('img-failed')">
+            <div class="game-img-placeholder">
+                <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="4" y="12" width="56" height="40" rx="6" stroke="currentColor" stroke-width="3" fill="none"/>
+                    <circle cx="22" cy="32" r="7" stroke="currentColor" stroke-width="2.5" fill="none"/>
+                    <line x1="35" y1="26" x2="55" y2="26" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="35" y1="32" x2="50" y2="32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="35" y1="38" x2="45" y2="38" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+                <span class="ph-label">SOMAGAMASU</span>
+            </div>
             <button class="fav-btn ${favCls}" id="fav-btn-${appId}"
                 onclick='toggleFav("${appId}",${gameJson})' title="Favourite">${favStar}</button>
         </div>
