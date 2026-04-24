@@ -1,39 +1,68 @@
 <!DOCTYPE html>
-<html lang="th" data-theme="dark" data-font="100">
+<html lang="th" data-theme="dark" data-font="150">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Somagamasu Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         /* ===== THEMES ===== */
+        /* Dark (was dark) */
         :root {
             --bg:#0d1117; --bg2:#161b22; --card:#1c2128; --card-hover:#21262d;
             --border:#30363d; --text:#e6edf3; --text-sub:#8b949e;
             --accent:#58a6ff; --accent2:#3fb950; --accent-glow:rgba(88,166,255,.15);
-            --sale:#f78166; --rare:#d2a8ff; --legendary:#ffa657; --forever:#79c0ff;
-            --badge-sale-bg:rgba(247,129,102,.15); --badge-rare-bg:rgba(210,168,255,.15);
-            --badge-legendary-bg:rgba(255,166,87,.15); --badge-forever-bg:rgba(121,192,255,.12);
+            /* Sale badge colors */
+            --sale:#e53935; --sale-bg:rgba(229,57,53,.18); --sale-border:#e53935;
+            --rare:#f5c518; --rare-bg:rgba(245,197,24,.15); --rare-border:#f5c518;
+            --legendary:#b8d0e8; --legendary-bg:rgba(184,208,232,.13); --legendary-border:#c8dff0;
+            --forever:#79c0ff; --forever-bg:rgba(121,192,255,.12); --forever-border:#79c0ff;
+            --badge-sale-bg:var(--sale-bg); --badge-rare-bg:var(--rare-bg);
+            --badge-legendary-bg:var(--legendary-bg); --badge-forever-bg:var(--forever-bg);
             --input-bg:#0d1117; --fav:#f1c40f;
         }
+        /* Night Purple (was dusk) */
         [data-theme="dusk"] {
             --bg:#1a1025; --bg2:#221535; --card:#2a1d42; --card-hover:#311f4e;
             --border:#3d2b5e; --text:#ede0ff; --text-sub:#9b7fc4;
             --accent:#c084fc; --accent2:#86efac; --accent-glow:rgba(192,132,252,.12);
+            --sale:#e53935; --sale-bg:rgba(229,57,53,.18);
+            --rare:#f5c518; --rare-bg:rgba(245,197,24,.15);
+            --legendary:#b8d0e8; --legendary-bg:rgba(184,208,232,.13); --legendary-border:#c8dff0;
+            --badge-sale-bg:var(--sale-bg); --badge-rare-bg:var(--rare-bg);
+            --badge-legendary-bg:var(--legendary-bg); --badge-forever-bg:rgba(121,192,255,.12);
             --input-bg:#1a1025;
         }
+        /* Clear (was fog) — light with adjusted text for contrast */
         [data-theme="fog"] {
-            --bg:#f0f2f5; --bg2:#fff; --card:#fff; --card-hover:#f6f8fa;
-            --border:#d0d7de; --text:#24292f; --text-sub:#57606a;
-            --accent:#0969da; --accent2:#1a7f37; --accent-glow:rgba(9,105,218,.08);
-            --input-bg:#fff;
+            --bg:#eef1f5; --bg2:#ffffff; --card:#ffffff; --card-hover:#f0f4f8;
+            --border:#c8d0da; --text:#1a1f27; --text-sub:#4a5568;
+            --accent:#0550ae; --accent2:#1a6e2e; --accent-glow:rgba(5,80,174,.10);
+            --sale:#c62828; --sale-bg:rgba(198,40,40,.13);
+            --rare:#b8860b; --rare-bg:rgba(184,134,11,.13);
+            --legendary:#4a7a9b; --legendary-bg:rgba(74,122,155,.12); --legendary-border:#4a7a9b;
+            --badge-sale-bg:var(--sale-bg); --badge-rare-bg:var(--rare-bg);
+            --badge-legendary-bg:var(--legendary-bg); --badge-forever-bg:rgba(5,80,174,.10);
+            --input-bg:#ffffff; --fav:#b8860b;
+        }
+        /* LUX — Mazda RX7 Han / Fast & Furious Tokyo Drift: Black + Orange + Yellow */
+        [data-theme="lux"] {
+            --bg:#0a0a0a; --bg2:#111108; --card:#181510; --card-hover:#1f1a0e;
+            --border:#3a2e10; --text:#f0e8c8; --text-sub:#a08c50;
+            --accent:#ff6b00; --accent2:#f5c518; --accent-glow:rgba(255,107,0,.18);
+            --sale:#e53935; --sale-bg:rgba(229,57,53,.18);
+            --rare:#f5c518; --rare-bg:rgba(245,197,24,.15);
+            --legendary:#b8d0e8; --legendary-bg:rgba(184,208,232,.13); --legendary-border:#c8dff0;
+            --forever:#ff6b00; --forever-bg:rgba(255,107,0,.12); --forever-border:#ff6b00;
+            --badge-sale-bg:var(--sale-bg); --badge-rare-bg:var(--rare-bg);
+            --badge-legendary-bg:var(--legendary-bg); --badge-forever-bg:var(--forever-bg);
+            --input-bg:#0a0a0a; --fav:#f5c518;
         }
 
         /* ===== FONT SIZE ===== */
         [data-font="100"] { font-size:16px; }
-        [data-font="125"] { font-size:20px; }
         [data-font="150"] { font-size:24px; }
+        [data-font="200"] { font-size:32px; }
 
         *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
         body { background:var(--bg); color:var(--text); font-family:'Prompt',sans-serif; transition:background .3s,color .3s; min-height:100vh; }
@@ -70,6 +99,22 @@
         .search-btn   { padding:11px 24px; background:var(--accent); color:var(--bg); border:none; border-radius:10px; font-family:'Space Mono',monospace; font-weight:700; font-size:.78em; cursor:pointer; letter-spacing:1px; transition:opacity .2s,transform .15s; white-space:nowrap; }
         .search-btn:hover { opacity:.85; transform:translateY(-1px); }
 
+        /* X CLEAR BUTTON */
+        .search-x { position:absolute; right:10px; top:50%; transform:translateY(-50%); background:none; border:none; color:var(--text-sub); font-size:1em; cursor:pointer; padding:4px 6px; border-radius:5px; display:none; line-height:1; transition:color .2s; }
+        .search-x:hover { color:var(--sale); }
+        .search-input-wrap { position:relative; flex:1; min-width:180px; display:flex; }
+        .search-input-wrap .search-input { width:100%; padding-right:34px; }
+
+        /* SALE FILTER ROW */
+        .sale-filter-row { display:flex; align-items:center; gap:9px; margin-top:6px; flex-wrap:wrap; }
+        .sale-filter-label { font-size:.63em; color:var(--text-sub); font-family:'Space Mono',monospace; white-space:nowrap; }
+        .chip.sale-chip { border-color:var(--sale-border,var(--sale)); color:var(--sale); }
+        .chip.sale-chip.active { background:var(--sale); color:#fff; border-color:var(--sale); }
+        .chip.rare-chip { border-color:var(--rare-border,var(--rare)); color:var(--rare); }
+        .chip.rare-chip.active { background:var(--rare); color:#000; border-color:var(--rare); }
+        .chip.legendary-chip { border-color:var(--legendary-border,var(--legendary)); color:var(--legendary); }
+        .chip.legendary-chip.active { background:var(--legendary); color:#000; border-color:var(--legendary); }
+
         /* STORE FILTER */
         .store-filter-row { display:flex; align-items:center; gap:9px; margin-top:10px; flex-wrap:wrap; }
         .store-filter-label { font-size:.63em; color:var(--text-sub); font-family:'Space Mono',monospace; white-space:nowrap; }
@@ -86,12 +131,6 @@
 
         /* ===== CONTAINER ===== */
         .container { max-width:1440px; margin:0 auto; padding:0 36px 60px; }
-        .container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    overflow-x: hidden; /* ป้องกันการเลื่อนซ้ายขวา */
-}
 
         /* STATS BAR */
         .stats-bar { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:12px; padding-bottom:12px; border-bottom:1px solid var(--border); }
@@ -122,13 +161,6 @@
 
         .game-info    { padding:11px 15px; }
         .game-title   { font-weight:600; font-size:.93em; margin-bottom:5px; line-height:1.3; }
-        .game-title {
-    word-break: break-word;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* จำกัดให้มีแค่ 2 บรรทัดพอ */
-    -webkit-box-orient: vertical;
-}
         .game-meta    { display:flex; flex-wrap:wrap; gap:4px; margin-top:4px; }
         .meta-tag     { font-size:.6em; padding:2px 6px; border-radius:4px; border:1px solid var(--border); color:var(--text-sub); font-family:'Space Mono',monospace; }
         .meta-tag.dev { border-color:var(--accent); color:var(--accent); }
@@ -138,13 +170,14 @@
 
         /* SALE BADGE */
         .sale-col     { padding:11px; text-align:center; min-width:108px; }
-        .badge        { display:inline-block; padding:3px 8px; border-radius:5px; font-family:'Space Mono',monospace; font-size:.57em; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
-        .badge-sale      { background:var(--badge-sale-bg);      color:var(--sale);      border:1px solid var(--sale); }
-        .badge-rare      { background:var(--badge-rare-bg);      color:var(--rare);      border:1px solid var(--rare); }
-        .badge-legendary { background:var(--badge-legendary-bg); color:var(--legendary); border:1px solid var(--legendary); animation:glimmer 2.5s ease-in-out infinite; }
-        .badge-forever   { background:var(--badge-forever-bg);   color:var(--forever);   border:1px solid var(--forever);   animation:pulse-blue 3s ease-in-out infinite; }
-        @keyframes glimmer   { 0%,100%{opacity:1} 50%{opacity:.6; box-shadow:0 0 8px var(--legendary)} }
-        @keyframes pulse-blue{ 0%,100%{opacity:1} 50%{opacity:.65;box-shadow:0 0 10px var(--forever)} }
+        .badge        { display:inline-block; padding:3px 10px; border-radius:5px; font-family:'Space Mono',monospace; font-size:.57em; font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:4px; }
+        .badge-sale      { background:var(--sale-bg);      color:var(--sale);      border:1px solid var(--sale-border, var(--sale)); }
+        .badge-rare      { background:var(--rare-bg);      color:var(--rare);      border:1px solid var(--rare-border, var(--rare)); animation:glimmer-gold 2.8s ease-in-out infinite; }
+        .badge-legendary { background:var(--legendary-bg); color:var(--legendary); border:1px solid var(--legendary-border,var(--legendary)); animation:glimmer 2.5s ease-in-out infinite; }
+        .badge-forever   { background:var(--forever-bg);   color:var(--forever);   border:1px solid var(--forever-border,var(--forever));   animation:pulse-blue 3s ease-in-out infinite; }
+        @keyframes glimmer      { 0%,100%{opacity:1} 50%{opacity:.6; box-shadow:0 0 8px var(--legendary)} }
+        @keyframes glimmer-gold { 0%,100%{opacity:1} 50%{opacity:.65;box-shadow:0 0 9px var(--rare)} }
+        @keyframes pulse-blue   { 0%,100%{opacity:1} 50%{opacity:.65;box-shadow:0 0 10px var(--forever)} }
         .discount-pct { font-size:1.25em; font-weight:700; color:var(--sale); font-family:'Space Mono',monospace; }
 
         /* PRICE */
@@ -190,68 +223,11 @@
         .empty-state .icon{ font-size:2.4em; margin-bottom:12px; }
         .empty-state p    { font-size:.83em; line-height:1.6; }
 
-      /* ===== RESPONSIVE FIX FOR MOBILE ===== */
-@media (max-width: 960px) {
-    .header { padding: 10px 15px; justify-content: center; }
-    .logo { text-align: center; width: 100%; margin-bottom: 10px; }
-    .header-right { justify-content: center; width: 100%; }
-    
-    .container, .search-area { padding: 15px; }
-
-    /* ปรับ Card เกมให้ยืดหยุ่นขึ้น */
-    .game-card {
-        display: flex;
-        flex-direction: column; /* เปลี่ยนจาก Grid เป็น Flex แนวตั้ง */
-        height: auto;
-        padding-bottom: 15px;
-    }
-
-    .game-img-wrap {
-        width: 100%;
-        height: 180px; /* ให้รูปใหญ่ขึ้นในมือถือ */
-    }
-
-    .game-info {
-        padding: 15px;
-        width: 100%;
-    }
-
-    /* สร้างแถวใหม่สำหรับ ราคา และ ปุ่มซื้อ ให้แสดงพร้อมกันในบรรทัดเดียว */
-    .sale-col, .price-col, .buy-col {
-        display: block !important; /* บังคับให้แสดง */
-        width: 100%;
-        padding: 5px 15px;
-        text-align: left;
-        min-width: unset;
-    }
-
-    /* จัดกลุ่มราคาและส่วนลดให้อยู่บรรทัดเดียวกัน */
-    .price-and-sale-row {
-        display: flex;
-        align-items: center;
-        gap: 15px;
-        background: var(--bg2);
-        margin: 0 15px;
-        padding: 10px;
-        border-radius: 8px;
-    }
-
-    .buy-col {
-        margin-top: 10px;
-    }
-
-    .buy-btn {
-        padding: 12px; /* เพิ่มขนาดปุ่มให้กดง่ายขึ้นในมือถือ */
-        font-size: 0.85em;
-    }
-}
-
-/* สำหรับมือถือจอเล็กเป็นพิเศษ */
-@media (max-width: 480px) {
-    .logo { font-size: 0.9em; }
-    .ctrl-label { display: none; } /* ซ่อน Label บางตัวเพื่อประหยัดพื้นที่ */
-    .font-btn { padding: 3px 5px; font-size: 0.6em; }
-}
+        @media(max-width:960px){
+            .game-card { grid-template-columns:108px 1fr; }
+            .sale-col,.price-col,.buy-col { display:none; }
+            .header,.container,.search-area { padding-left:14px; padding-right:14px; }
+        }
     </style>
 </head>
 <body>
@@ -268,9 +244,9 @@
         <!-- FONT SIZE -->
         <div class="ctrl-wrap">
             <span class="ctrl-label">A</span>
-            <button class="font-btn active" onclick="setFont('100',this)">100%</button>
-            <button class="font-btn" onclick="setFont('125',this)">125%</button>
-            <button class="font-btn" onclick="setFont('150',this)">150%</button>
+            <button class="font-btn" onclick="setFont('100',this)">100%</button>
+            <button class="font-btn active" onclick="setFont('150',this)">150%</button>
+            <button class="font-btn" onclick="setFont('200',this)">200%</button>
         </div>
 
         <!-- LANGUAGE -->
@@ -302,9 +278,10 @@
         <!-- THEME -->
         <div class="ctrl-wrap">
             <span class="ctrl-label">THEME</span>
-            <div class="theme-btn active" style="background:#1c2128" onclick="setTheme('dark',this)"></div>
-            <div class="theme-btn" style="background:#2a1d42" onclick="setTheme('dusk',this)"></div>
-            <div class="theme-btn" style="background:#f0f2f5;border-color:#d0d7de" onclick="setTheme('fog',this)"></div>
+            <div class="theme-btn active" title="Dark" style="background:#1c2128" onclick="setTheme('dark',this)"></div>
+            <div class="theme-btn" title="Night Purple" style="background:#2a1d42" onclick="setTheme('dusk',this)"></div>
+            <div class="theme-btn" title="Clear" style="background:#eef1f5;border-color:#c8d0da" onclick="setTheme('fog',this)"></div>
+            <div class="theme-btn" title="LUX" style="background:linear-gradient(135deg,#0a0a0a 50%,#ff6b00 50%)" onclick="setTheme('lux',this)"></div>
         </div>
 
         <!-- FAVOURITES -->
@@ -316,10 +293,25 @@
 <div class="search-area">
     <div class="search-label" id="search-label">// SEARCH GAME DEALS</div>
     <div class="search-row">
-        <input type="text" id="q" class="search-input"
-               placeholder="Search game... e.g. Resident Evil 2, Elden Ring"
-               onkeydown="if(event.key==='Enter') doSearch()">
+        <div class="search-input-wrap">
+            <input type="text" id="q" class="search-input"
+                   placeholder="Search game... e.g. Resident Evil 2, Elden Ring"
+                   oninput="toggleXBtn()" onkeydown="if(event.key==='Enter') doSearch()">
+            <button class="search-x" id="search-x-btn" onclick="clearSearch()" title="Clear">✕</button>
+        </div>
         <button class="search-btn" id="search-btn-text" onclick="doSearch()">SEARCH</button>
+    </div>
+
+    <!-- SALE TYPE FILTER -->
+    <div class="sale-filter-row">
+        <span class="sale-filter-label">SALE TYPE:</span>
+        <div class="store-chips" id="sale-chips">
+            <div class="chip all active" data-sale="all" onclick="toggleSaleChip(this)">🌐 All</div>
+            <div class="chip sale-chip" data-sale="sale" onclick="toggleSaleChip(this)">🔴 On Sale</div>
+            <div class="chip rare-chip" data-sale="rare" onclick="toggleSaleChip(this)">🥇 Rare Sale</div>
+            <div class="chip legendary-chip" data-sale="legendary" onclick="toggleSaleChip(this)">💎 Legendary</div>
+            <div class="chip legendary-chip" data-sale="forever" onclick="toggleSaleChip(this)">♾ Forever</div>
+        </div>
     </div>
 
     <!-- STORE FILTER -->
@@ -377,6 +369,7 @@ let currentCurrency = 'USD';
 let currentSymbol = '$';
 let currentRate = 1;        // rate vs USD
 let selectedStores = new Set(['all']);
+let selectedSaleType = new Set(['all']);
 let favs = {};
 let showingFavs = false;
 
@@ -521,6 +514,39 @@ function filterStores(stores) {
     });
 }
 
+/* SALE TYPE FILTER */
+function toggleSaleChip(el) {
+    const sale = el.dataset.sale;
+    const allChip = document.querySelector('#sale-chips .chip.all');
+    if (sale === 'all') {
+        selectedSaleType = new Set(['all']);
+        document.querySelectorAll('#sale-chips .chip').forEach(c => c.classList.remove('active'));
+        el.classList.add('active');
+    } else {
+        allChip.classList.remove('active');
+        selectedSaleType.delete('all');
+        el.classList.toggle('active');
+        if (el.classList.contains('active')) selectedSaleType.add(sale);
+        else selectedSaleType.delete(sale);
+        if (!selectedSaleType.size) { selectedSaleType.add('all'); allChip.classList.add('active'); }
+    }
+    if (allData.length > 0) render(1);
+}
+function filterBySale(data) {
+    if (selectedSaleType.has('all')) return data;
+    return data.filter(g => selectedSaleType.has(g.sale_type || ''));
+}
+
+/* X BUTTON */
+function clearSearch() {
+    document.getElementById('q').value = '';
+    document.getElementById('search-x-btn').style.display = 'none';
+}
+function toggleXBtn() {
+    const v = document.getElementById('q').value;
+    document.getElementById('search-x-btn').style.display = v ? 'block' : 'none';
+}
+
 /* =====================================================
    i18n
 ===================================================== */
@@ -541,11 +567,13 @@ function setFont(size, el) {
     document.documentElement.setAttribute('data-font', size);
     document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
     if (el) el.classList.add('active');
+    localStorage.setItem('soma_font', size);
 }
 function setTheme(theme, el) {
     document.documentElement.setAttribute('data-theme', theme);
     document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
     if (el) el.classList.add('active');
+    localStorage.setItem('soma_theme', theme);
 }
 function onLangChange() {
     const sel = document.getElementById('lang-select');
@@ -601,9 +629,10 @@ async function doSearch() {
 ===================================================== */
 function render(page) {
     currentPage = page;
+    const filtered = filterBySale(allData);
     const start = (page-1) * PER_PAGE;
-    const slice = allData.slice(start, start+PER_PAGE);
-    const total = allData.length;
+    const slice = filtered.slice(start, start+PER_PAGE);
+    const total = filtered.length;
     const totalPages = Math.ceil(total/PER_PAGE);
 
     const statsBar = document.getElementById('stats-bar');
@@ -740,6 +769,23 @@ function showError(msg) {
    INIT
 ===================================================== */
 loadFavs();
+
+/* Restore saved theme + font */
+(function(){
+    const savedTheme = localStorage.getItem('soma_theme');
+    if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+        const map = {dark:0,dusk:1,fog:2,lux:3};
+        const btns = document.querySelectorAll('.theme-btn');
+        if (btns[map[savedTheme]]) btns[map[savedTheme]].classList.add('active');
+    }
+    const savedFont = localStorage.getItem('soma_font') || '150';
+    document.documentElement.setAttribute('data-font', savedFont);
+    document.querySelectorAll('.font-btn').forEach(b => {
+        b.classList.toggle('active', b.textContent.replace('%','') === savedFont);
+    });
+})();
 </script>
 </body>
 </html>
